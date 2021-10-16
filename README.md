@@ -1,6 +1,6 @@
 # PolyWars smart contracts
 The PolyWars smart contracts for public review.
-Please find the links/addresses to the currently deployed contracts in our [*About*](https://polywars.space/about#smart-contracts) section.
+Please find the links to / addresses of the currently deployed contracts in our [*About*](https://polywars.space/about#smart-contracts) section.
 
 ## Contracts
 - [BattleShip NFT Contract](/BattleShip.sol)
