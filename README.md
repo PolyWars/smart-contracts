@@ -5,7 +5,7 @@ Please find the links to / addresses of the currently deployed contracts in our 
 ## Contracts
 - [BattleShip NFT Contract](/BattleShip.sol)
 - [RESS Token Contract](/RessToken.sol)
-- [Game Proxy Contract](/TransparentUpgradableProxy.sol)
+- [Game Proxy Contract](/TransparentUpgradeableProxy.sol)
 
 We won't release the full game library contracts for now, to protect ourselves and our hard work from copycats and rip-offs. We apologize for any inconvenience and thank you for your understanding.
 
