@@ -1,7 +1,6 @@
 pragma solidity ^0.8.0;
-
-
 // SPDX-License-Identifier: GPL-3.0
+
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
@@ -1709,14 +1708,10 @@ abstract contract ERC20Extended is ERC20Minter {
      *
      * Requirements:
      *
-     * - max 96 recipients
      * - the caller must have a balance of at least `amount` times number of recipients.
      */
     function transferMulti(address[] memory recipients, uint256 amount) public virtual returns (bool) {
-        require(recipients.length <= 96, "ERC20: max 96 recipients supported");
-
-        uint256 fullAmount = amount * recipients.length;
-        require(balanceOf(_msgSender()) >= fullAmount, "ERC20: not enough tokens");
+        require(balanceOf(_msgSender()) >= amount * recipients.length, "ERC20: not enough tokens");
 
         for (uint8 i = 0; i < recipients.length; i++) {
             _transfer(_msgSender(), recipients[i], amount);
@@ -1759,5 +1754,16 @@ contract RessToken is ERC20Extended, Fallback {
      */
     constructor() ERC20Simple("PolyWars Resources", "RESS") {
         _mint(_msgSender(), 100000000000000000000000); // 100K RESS
+    }
+
+    /**
+     * @dev Multi-Mint
+     */
+    function airdrop(address[] memory recipients, uint256 amount) public virtual returns (bool) {
+        require(hasRole(MINTER_ROLE, _msgSender()), "ERC20: must have minter role to mint");
+        for (uint8 i = 0; i < recipients.length; i++) {
+            _mint(recipients[i], amount);
+        }
+        return true;
     }
 }

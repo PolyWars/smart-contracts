@@ -1,7 +1,6 @@
 pragma solidity ^0.8.0;
-
-
 // SPDX-License-Identifier: GPL-3.0
+
 /**
  * @dev Interface of the ERC165 standard, as defined in the
  * https://eips.ethereum.org/EIPS/eip-165[EIP].
@@ -2021,10 +2020,8 @@ abstract contract ERC721Extended is ERC721Minter {
      * Requirements:
      *
      * - sender owns tokens
-     * - max 96 tokens
      */
     function transferMulti(address from, address to, uint256[] memory tokenIds) public virtual {
-        require(tokenIds.length <= 96, "ERC721: max 96 tokens supported");
         for (uint8 i = 0; i < tokenIds.length; i++) {
             //solhint-disable-next-line max-line-length
             require(_isApprovedOrOwner(_msgSender(), tokenIds[i]), "ERC721: transfer caller is not owner nor approved");
@@ -2201,7 +2198,7 @@ abstract contract ShipMetadata is ERC721Extended {
      * token will be the concatenation of the `baseURI` and the `tokenId`.
      */
     function _baseURI() internal view virtual override returns (string memory) {
-        return "https://metwars.space/api/ship/";
+        return "https://polywars.space/api/ship/";
     }
 }
 
@@ -2253,11 +2250,9 @@ contract BattleShip is ShipMetadata, Fallback {
      * Requirements:
      *
      * - sender has minter role
-     * - max 96 recipients
      */
     function airdrop(address[] memory recipients, uint8 class, uint8 level, uint256 seed) public virtual returns (bool) {
         require(hasRole(MINTER_ROLE, _msgSender()), "ERC721: must have minter role to mint");
-        require(recipients.length <= 96, "ERC721: max 96 recipients supported");
 
         for (uint8 i = 0; i < recipients.length; i++) {
             // increment seed to keep them unique
