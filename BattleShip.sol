@@ -1,6 +1,96 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
+
+// 
+/**
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        return msg.data;
+    }
+}
+
+// 
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+abstract contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor() {
+        _setOwner(_msgSender());
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+        _;
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _setOwner(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _setOwner(newOwner);
+    }
+
+    function _setOwner(address newOwner) private {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+
+// 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
  * https://eips.ethereum.org/EIPS/eip-165[EIP].
@@ -22,6 +112,7 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
+// 
 /**
  * @dev Required interface of an ERC721 compliant contract.
  */
@@ -159,6 +250,7 @@ interface IERC721 is IERC165 {
     ) external;
 }
 
+// 
 /**
  * @title ERC721 token receiver interface
  * @dev Interface for any contract that wants to support safeTransfers
@@ -182,6 +274,7 @@ interface IERC721Receiver {
     ) external returns (bytes4);
 }
 
+// 
 /**
  * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
  * @dev See https://eips.ethereum.org/EIPS/eip-721
@@ -203,6 +296,7 @@ interface IERC721Metadata is IERC721 {
     function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
+// 
 /**
  * @dev Collection of functions related to the address type
  */
@@ -416,26 +510,7 @@ library Address {
     }
 }
 
-/**
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
- */
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address) {
-        return msg.sender;
-    }
-
-    function _msgData() internal view virtual returns (bytes calldata) {
-        return msg.data;
-    }
-}
-
+// 
 /**
  * @dev String operations.
  */
@@ -499,6 +574,7 @@ library Strings {
     }
 }
 
+// 
 /**
  * @dev Implementation of the {IERC165} interface.
  *
@@ -522,12 +598,13 @@ abstract contract ERC165 is IERC165 {
     }
 }
 
+// 
 /**
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-contract ERC721Simple is Context, ERC165, IERC721, IERC721Metadata {
+contract ERC721Simple is Ownable, ERC165, IERC721, IERC721Metadata {
     using Address for address;
     using Strings for uint256;
 
@@ -927,6 +1004,7 @@ contract ERC721Simple is Context, ERC165, IERC721, IERC721Metadata {
     ) internal virtual {}
 }
 
+// 
 /**
  * @title ERC-721 Non-Fungible Token Standard, optional enumeration extension
  * @dev See https://eips.ethereum.org/EIPS/eip-721
@@ -950,6 +1028,7 @@ interface IERC721Enumerable is IERC721 {
     function tokenByIndex(uint256 index) external view returns (uint256);
 }
 
+// 
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
@@ -1034,6 +1113,7 @@ interface IAccessControl {
     function renounceRole(bytes32 role, address account) external;
 }
 
+// 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
@@ -1059,6 +1139,7 @@ interface IAccessControlEnumerable is IAccessControl {
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
+// 
 /**
  * @dev Contract module that allows children to implement role-based access
  * control mechanisms. This is a lightweight version that doesn't allow enumerating role
@@ -1261,6 +1342,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
+// 
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive
@@ -1614,6 +1696,7 @@ library EnumerableSet {
     }
 }
 
+// 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
@@ -1686,6 +1769,7 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     }
 }
 
+// 
 /**
  * @title Counters
  * @author Matt Condon (@shrugs)
@@ -1725,6 +1809,7 @@ library Counters {
     }
 }
 
+// 
 /**
  * @title ERC721 Burnable Token
  * @dev ERC721 Token that can be irreversibly burned (destroyed).
@@ -2022,7 +2107,7 @@ abstract contract ERC721Extended is ERC721Minter {
      * - sender owns tokens
      */
     function transferMulti(address from, address to, uint256[] memory tokenIds) public virtual {
-        for (uint8 i = 0; i < tokenIds.length; i++) {
+        for (uint16 i = 0; i < tokenIds.length; i++) {
             //solhint-disable-next-line max-line-length
             require(_isApprovedOrOwner(_msgSender(), tokenIds[i]), "ERC721: transfer caller is not owner nor approved");
             _transfer(from, to, tokenIds[i]);
@@ -2030,6 +2115,7 @@ abstract contract ERC721Extended is ERC721Minter {
     }
 }
 
+// 
 /**
  * @dev Fallback for sent ETH
  */
@@ -2058,6 +2144,7 @@ contract Fallback {
     }
 }
 
+// 
 /**
  * @dev ERC721 token with storage based data management.
  */
@@ -2240,8 +2327,17 @@ contract BattleShip is ShipMetadata, Fallback {
         address npc7 = address(0x0000deADbea7BEefFACEDBADB00b1e5bABe42069);
         _mint(npc7, 4, 1, 8008135000420690001);
         _mint(npc7, 3, 1, 8008135000420690002);
-        _mint(npc7, 2, 1, 8008135000420690002);
-        _mint(npc7, 1, 1, 8008135000420690002);
+        _mint(npc7, 2, 1, 8008135000420690003);
+        _mint(npc7, 1, 1, 8008135000420690004);
+
+        _mint(address(0x0000000000000000000000000000000000000001), 0, 0, 2021103112000001);
+        _mint(address(0x0000000000000000000000000000000000000002), 0, 0, 2021103112000002);
+        _mint(address(0x0000000000000000000000000000000000000003), 0, 0, 2021103112000003);
+        _mint(address(0x0000000000000000000000000000000000000004), 0, 0, 2021103112000004);
+        _mint(address(0x0000000000000000000000000000000000000005), 0, 0, 2021103112000005);
+        _mint(address(0x0000000000000000000000000000000000000006), 0, 0, 2021103112000006);
+
+        _mint(address(0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045), 3, 0, 10000000);
     }
 
     /**
@@ -2259,5 +2355,12 @@ contract BattleShip is ShipMetadata, Fallback {
             _mint(recipients[i], class, level, seed + i);
         }
         return true;
+    }
+
+    /**
+     * @dev Contract Metadata Url
+     */
+    function contractURI() public view virtual returns (string memory) {
+        return string(abi.encodePacked(_baseURI(), "contract.json"));
     }
 }

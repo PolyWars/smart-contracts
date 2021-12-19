@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
+
+// 
 /**
  * @dev This abstract contract provides a fallback function that delegates all calls to another contract using the EVM
  * instruction `delegatecall`. We refer to the second contract as the _implementation_ behind the proxy, and it has to
@@ -83,6 +85,7 @@ abstract contract Proxy {
     function _beforeFallback() internal virtual {}
 }
 
+// 
 /**
  * @dev This is the interface that {BeaconProxy} expects of its beacon.
  */
@@ -95,6 +98,7 @@ interface IBeacon {
     function implementation() external view returns (address);
 }
 
+// 
 /**
  * @dev Collection of functions related to the address type
  */
@@ -308,6 +312,7 @@ library Address {
     }
 }
 
+// 
 /**
  * @dev Library for reading and writing primitive types to specific storage slots.
  *
@@ -388,6 +393,7 @@ library StorageSlot {
     }
 }
 
+// 
 /**
  * @dev This abstract contract provides getters and event emitting update functions for
  * https://eips.ethereum.org/EIPS/eip-1967[EIP1967] slots.
@@ -574,6 +580,7 @@ abstract contract ERC1967Upgrade {
     }
 }
 
+// 
 /**
  * @dev This contract implements an upgradeable proxy. It is upgradeable because calls are delegated to an
  * implementation address that can be changed. This address is stored in storage in the location specified by
@@ -600,6 +607,7 @@ contract ERC1967Proxy is Proxy, ERC1967Upgrade {
     }
 }
 
+// 
 /**
  * @dev This contract implements a proxy that is upgradeable by an admin.
  *

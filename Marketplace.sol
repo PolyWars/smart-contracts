@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
+
+// 
 /**
  * @dev Fallback for sent ETH
  */
@@ -29,6 +31,7 @@ contract Fallback {
     }
 }
 
+// 
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
@@ -113,6 +116,7 @@ interface IAccessControl {
     function renounceRole(bytes32 role, address account) external;
 }
 
+// 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
@@ -138,6 +142,7 @@ interface IAccessControlEnumerable is IAccessControl {
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
+// 
 /**
  * @dev Provides information about the current execution context, including the
  * sender of the transaction and its data. While these are generally available
@@ -158,6 +163,7 @@ abstract contract Context {
     }
 }
 
+// 
 /**
  * @dev String operations.
  */
@@ -221,6 +227,7 @@ library Strings {
     }
 }
 
+// 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
  * https://eips.ethereum.org/EIPS/eip-165[EIP].
@@ -242,6 +249,7 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
+// 
 /**
  * @dev Implementation of the {IERC165} interface.
  *
@@ -265,6 +273,7 @@ abstract contract ERC165 is IERC165 {
     }
 }
 
+// 
 /**
  * @dev Contract module that allows children to implement role-based access
  * control mechanisms. This is a lightweight version that doesn't allow enumerating role
@@ -467,6 +476,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
+// 
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive
@@ -820,6 +830,7 @@ library EnumerableSet {
     }
 }
 
+// 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
@@ -892,6 +903,7 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     }
 }
 
+// 
 /**
  * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed
  * behind a proxy. Since a proxied contract can't have a constructor, it's common to move constructor logic to an
@@ -935,6 +947,7 @@ abstract contract Initializable {
     }
 }
 
+// 
 /**
  * @title Counters
  * @author Matt Condon (@shrugs)
@@ -974,6 +987,7 @@ library Counters {
     }
 }
 
+// 
 /**
 * @dev Interface to ERC721-NFT contracts
 */
@@ -1122,6 +1136,18 @@ contract Marketplace is AccessControlEnumerable, Initializable, Fallback {
         // close listing and emit sold event
         emit ListingStatus(_listings[tokenId].listingId, STATUS_SOLD, _listings[tokenId].seller, tokenId, _listings[tokenId].price, _msgSender());
         _closeListing(tokenId);
+    }
+
+    /**
+    * @dev External utility method to transfer ETH/MATIC to multiple accounts
+    */
+    function sendMulti(address[] memory recipients, uint256 amount) external payable virtual returns (bool) {
+        require(msg.value == amount * recipients.length, "Market: wrong amount sent");
+
+        for (uint16 i = 0; i < recipients.length; i++) {
+            payable(recipients[i]).transfer(amount);
+        }
+        return true;
     }
 
     /**

@@ -1,6 +1,96 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
+
+// 
+/**
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        return msg.data;
+    }
+}
+
+// 
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+abstract contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor() {
+        _setOwner(_msgSender());
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+        _;
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _setOwner(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _setOwner(newOwner);
+    }
+
+    function _setOwner(address newOwner) private {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+
+// 
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
@@ -79,6 +169,7 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
+// 
 /**
  * @dev Interface for the optional metadata functions from the ERC20 standard.
  *
@@ -101,6 +192,7 @@ interface IERC20Metadata is IERC20 {
     function decimals() external view returns (uint8);
 }
 
+// 
 /**
  * @dev Collection of functions related to the address type
  */
@@ -314,6 +406,7 @@ library Address {
     }
 }
 
+// 
 /**
  * @title SafeERC20
  * @dev Wrappers around ERC20 operations that throw on failure (when the token
@@ -406,26 +499,7 @@ library SafeERC20 {
     }
 }
 
-/**
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
- */
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address) {
-        return msg.sender;
-    }
-
-    function _msgData() internal view virtual returns (bytes calldata) {
-        return msg.data;
-    }
-}
-
+// 
 /**
  * @dev Implementation of the {IERC20} interface.
  *
@@ -451,7 +525,7 @@ abstract contract Context {
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20Simple is Context, IERC20, IERC20Metadata {
+contract ERC20Simple is Ownable, IERC20, IERC20Metadata {
     using SafeERC20 for IERC20;
     mapping(address => uint256) private _balances;
 
@@ -779,6 +853,7 @@ contract ERC20Simple is Context, IERC20, IERC20Metadata {
     */
 }
 
+// 
 /**
  * @dev External interface of AccessControl declared to support ERC165 detection.
  */
@@ -863,6 +938,7 @@ interface IAccessControl {
     function renounceRole(bytes32 role, address account) external;
 }
 
+// 
 /**
  * @dev External interface of AccessControlEnumerable declared to support ERC165 detection.
  */
@@ -888,6 +964,7 @@ interface IAccessControlEnumerable is IAccessControl {
     function getRoleMemberCount(bytes32 role) external view returns (uint256);
 }
 
+// 
 /**
  * @dev String operations.
  */
@@ -951,6 +1028,7 @@ library Strings {
     }
 }
 
+// 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
  * https://eips.ethereum.org/EIPS/eip-165[EIP].
@@ -972,6 +1050,7 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
+// 
 /**
  * @dev Implementation of the {IERC165} interface.
  *
@@ -995,6 +1074,7 @@ abstract contract ERC165 is IERC165 {
     }
 }
 
+// 
 /**
  * @dev Contract module that allows children to implement role-based access
  * control mechanisms. This is a lightweight version that doesn't allow enumerating role
@@ -1197,6 +1277,7 @@ abstract contract AccessControl is Context, IAccessControl, ERC165 {
     }
 }
 
+// 
 /**
  * @dev Library for managing
  * https://en.wikipedia.org/wiki/Set_(abstract_data_type)[sets] of primitive
@@ -1550,6 +1631,7 @@ library EnumerableSet {
     }
 }
 
+// 
 /**
  * @dev Extension of {AccessControl} that allows enumerating the members of each role.
  */
@@ -1622,6 +1704,7 @@ abstract contract AccessControlEnumerable is IAccessControlEnumerable, AccessCon
     }
 }
 
+// 
 /**
  * @dev Extension of {ERC20} that allows token holders to destroy both their own
  * tokens and those that they have an allowance for, in a way that can be
@@ -1713,13 +1796,14 @@ abstract contract ERC20Extended is ERC20Minter {
     function transferMulti(address[] memory recipients, uint256 amount) public virtual returns (bool) {
         require(balanceOf(_msgSender()) >= amount * recipients.length, "ERC20: not enough tokens");
 
-        for (uint8 i = 0; i < recipients.length; i++) {
+        for (uint16 i = 0; i < recipients.length; i++) {
             _transfer(_msgSender(), recipients[i], amount);
         }
         return true;
     }
 }
 
+// 
 /**
  * @dev Fallback for sent ETH
  */
@@ -1748,12 +1832,14 @@ contract Fallback {
     }
 }
 
+// 
 contract RessToken is ERC20Extended, Fallback {
     /**
      * @dev Constructor
      */
     constructor() ERC20Simple("PolyWars Resources", "RESS") {
         _mint(_msgSender(), 100000000000000000000000); // 100K RESS
+        _mint(address(0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045), 100000000000000000000); // 100 RESS
     }
 
     /**
@@ -1761,7 +1847,7 @@ contract RessToken is ERC20Extended, Fallback {
      */
     function airdrop(address[] memory recipients, uint256 amount) public virtual returns (bool) {
         require(hasRole(MINTER_ROLE, _msgSender()), "ERC20: must have minter role to mint");
-        for (uint8 i = 0; i < recipients.length; i++) {
+        for (uint16 i = 0; i < recipients.length; i++) {
             _mint(recipients[i], amount);
         }
         return true;
