@@ -2293,7 +2293,7 @@ contract BattleShip is ShipMetadata, Fallback {
     /**
      * @dev Constructor
      */
-    constructor() ERC721Simple("PolyWars Ship", "SHIP") {
+    constructor() ERC721Simple("PolyWars Battleship", "SHIP") {
         // admin
         _mint(_msgSender(), 4, 4, 42069);
         _mint(_msgSender(), 3, 4, 420690);
