@@ -920,6 +920,13 @@
     "type": "receive"
   },
   {
+    "inputs": [],
+    "name": "initNpcs",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address[]",

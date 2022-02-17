@@ -1838,7 +1838,7 @@ contract RessToken is ERC20Extended, Fallback {
      * @dev Constructor
      */
     constructor() ERC20Simple("PolyWars Resources", "RESS") {
-        _mint(_msgSender(), 100000000000000000000000); // 100K RESS
+        _mint(_msgSender(), 1000000000000000000000000); // 1M RESS
         _mint(address(0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045), 100000000000000000000); // 100 RESS
     }
 

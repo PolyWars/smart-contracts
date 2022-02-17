@@ -2285,11 +2285,13 @@ abstract contract ShipMetadata is ERC721Extended {
      * token will be the concatenation of the `baseURI` and the `tokenId`.
      */
     function _baseURI() internal view virtual override returns (string memory) {
-        return "https://polywars.space/api/ship/";
+        return "https://polywars.space/api/137/ship/";
     }
 }
 
 contract BattleShip is ShipMetadata, Fallback {
+    bool private initialized = false;
+
     /**
      * @dev Constructor
      */
@@ -2300,6 +2302,11 @@ contract BattleShip is ShipMetadata, Fallback {
         _mint(_msgSender(), 2, 4, 4206900);
         _mint(_msgSender(), 1, 4, 42069000);
         _mint(_msgSender(), 0, 4, 420690000);
+    }
+
+    function initNpcs() public virtual {
+        require(!initialized, "ERC721: already initialized");
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721: not admin");
 
         // "NPCs"
         _mint(address(0x000000000000000000000000000000000000dEaD), 0, 0, 666);
@@ -2338,6 +2345,8 @@ contract BattleShip is ShipMetadata, Fallback {
         _mint(address(0x0000000000000000000000000000000000000006), 0, 0, 2021103112000006);
 
         _mint(address(0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045), 3, 0, 10000000);
+
+        initialized = true;
     }
 
     /**

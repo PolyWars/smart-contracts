@@ -1036,7 +1036,7 @@ contract Marketplace is AccessControlEnumerable, Initializable, Fallback {
     function initialize() public initializer {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
 
-        _rate = 50; // == 0.5% @ factor 10000
+        _rate = 100; // == 1% @ factor 10000
         _hq = _msgSender();
     }
     /// @custom:oz-upgrades-unsafe-allow constructor
