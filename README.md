@@ -5,6 +5,7 @@ Please find the up-to-date links to / addresses of the currently deployed contra
 ## Contracts
 - [BattleShip NFT Contract](/BattleShip.sol)
 - [RESS Token Contract](/RessToken.sol)
+- [Commander NFT Contract](/Commander.sol)
 - [NFT Marketplace Contract](/Marketplace.sol)
 - [Game & Marketplace Proxy Contract](/TransparentUpgradeableProxy.sol)
 
